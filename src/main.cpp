@@ -35,36 +35,97 @@ std::optional<sf::Texture> read_texture(const std::string& path)
 
 int main()
 {
+    std::cout << "Learning First start\n";
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "My window");
 
     auto car_texture = read_texture("images/car.png");
     lf::models::Vehicle car{car_texture.value(), 0.1f};
     car.set_position(500, 500);
 
-    auto track_texture = read_texture("images/poznan_track.png");
+    auto track_texture = read_texture("images/custom_track.png");
     lf::models::Track track{track_texture.value()};
+
+    bool accelerating{false};
+    bool braking{false};
+    bool rotating_left{false};
+    bool rotating_right{false};
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+            switch (event.type) {
+            case sf::Event::Closed:
                 window.close();
-            } else if (event.type = sf::Event::KeyPressed) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                break;
+
+            case sf::Event::KeyPressed:
+                switch (event.key.code) {
+                case sf::Keyboard::Escape: {
                     window.close();
+                    break;
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                    car.rotate(-2);
+                case sf::Keyboard::Left: {
+                    rotating_left = true;
+                    break;
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                    car.rotate(2);
+                case sf::Keyboard::Right: {
+                    rotating_right = true;
+                    break;
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-                    car.accelerate(1);
+                case sf::Keyboard::Up: {
+                    accelerating = true;
+                    break;
                 }
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                    car.accelerate(-1);
+                case sf::Keyboard::Down: {
+                    braking = true;
+                    break;
                 }
+                default:
+                    break;
+                }
+                break;
+
+            case sf::Event::KeyReleased:
+                switch (event.key.code) {
+                case sf::Keyboard::Left: {
+                    rotating_left = false;
+                    break;
+                }
+                case sf::Keyboard::Right: {
+                    rotating_right = false;
+                    break;
+                }
+                case sf::Keyboard::Up: {
+                    accelerating = false;
+                    break;
+                }
+                case sf::Keyboard::Down: {
+                    braking = false;
+                    break;
+                }
+                default:
+                    break;
+                }
+                break;
+            }
+        }
+
+        if (braking != accelerating) {
+            if (braking) {
+                car.accelerate(-1.0f + car.get_velocity() / car.max_velocity);
+            } else if (accelerating) {
+                car.accelerate(1.0f - car.get_velocity() / car.max_velocity);
+            }
+        } else {
+            const auto car_slowing = car.get_velocity() * 0.02f;
+            car.accelerate((car_slowing) > 0.01f ? -car_slowing : -1.0f);
+        }
+
+        if (rotating_left != rotating_right) {
+            if (rotating_left) {
+                car.rotate(-2);
+            } else if (rotating_right) {
+                car.rotate(2);
             }
         }
 

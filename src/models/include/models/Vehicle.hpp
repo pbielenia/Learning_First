@@ -15,7 +15,12 @@ public:
     void accelerate(float acceleration);
     void update(float time_step_ms);
 
+    float get_velocity() const;
+
 private:
+    const float max_velocity{2.0f};
+    const float min_velocity{0.0f};
+
     float velocity{0.0f};
     float steering_rad{0.0f};
 

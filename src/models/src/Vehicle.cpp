@@ -29,6 +29,11 @@ void Vehicle::rotate(float rotation_deg)
 void Vehicle::accelerate(float acceleration)
 {
     velocity += acceleration;
+    if (velocity > max_velocity) {
+        velocity = max_velocity;
+    } else if (velocity < min_velocity) {
+        velocity = min_velocity;
+    }
 }
 
 void Vehicle::set_steering(float steering_deg)
@@ -43,7 +48,12 @@ void Vehicle::update(float time_step_ms)
     static const auto pi = std::acos(-1);
     static const auto multiplier = 180.0f / pi;
 
-    sf::Vector2f steering_vect{std::sin(steering_rad), std::cos(steering_rad)};
+    sf::Vector2f steering_vect{std::sin(steering_rad), -std::cos(steering_rad)};
     Drawable::move(steering_vect * velocity);
     Drawable::set_rotation(steering_rad * multiplier);
+}
+
+float Vehicle::get_velocity() const
+{
+    return velocity;
 }

@@ -1,3 +1,4 @@
+#include "collisions/Collision.hpp"
 #include "models/Track.hpp"
 #include "models/Vehicle.hpp"
 
@@ -26,7 +27,7 @@ float to_degrees(float angle_in_radians)
 std::optional<sf::Texture> read_texture(const std::string& path)
 {
     sf::Texture texture;
-    if (!texture.loadFromFile(path)) {
+    if (Collision::CreateTextureAndBitmask(texture, path) == false) {
         return {};
     } else {
         return texture;
@@ -36,14 +37,16 @@ std::optional<sf::Texture> read_texture(const std::string& path)
 int main()
 {
     std::cout << "Learning First start\n";
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "My window");
+    sf::RenderWindow window(sf::VideoMode(1000, 1080), "My window");
 
-    auto car_texture = read_texture("images/car.png");
-    lf::models::Vehicle car{car_texture.value(), 0.1f};
+    const auto car_texture = read_texture("images/car.png");
+    const auto car_collision_texture = read_texture("images/car-wheels.png");
+    lf::models::Vehicle car{car_texture.value(), car_collision_texture.value(), 0.1f};
     car.set_position(500, 500);
 
-    auto track_texture = read_texture("images/custom_track.png");
-    lf::models::Track track{track_texture.value()};
+    const auto track_texture = read_texture("images/custom_track.png");
+    const auto track_collision_texture = read_texture("images/custom_track-grass.png");
+    lf::models::Track track{track_texture.value(), track_collision_texture.value()};
 
     bool accelerating{false};
     bool braking{false};
@@ -127,6 +130,13 @@ int main()
             } else if (rotating_right) {
                 car.rotate(2);
             }
+        }
+
+        if (Collision::PixelPerfectTest(car.get_collision_sprite(),
+                                        track.get_collision_sprite())) {
+            std::cout << "Collision!\n";
+        } else {
+            std::cout << "No collision!\n";
         }
 
         window.clear(sf::Color::Black);

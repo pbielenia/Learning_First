@@ -4,7 +4,10 @@
 
 using namespace lf::models;
 
-Vehicle::Vehicle(const sf::Texture& texture, float scale) : Drawable(texture, scale)
+Vehicle::Vehicle(const sf::Texture& texture_view,
+                 const sf::Texture& texture_collision,
+                 float scale)
+    : Drawable(texture_view, texture_collision, scale)
 {
     set_origin(Drawable::get_middle());
 }

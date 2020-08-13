@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.17)
 
-set(target_name models)
+set(target_name collisions)
 
 add_library(${target_name}
-    src/Drawable.cpp
-    src/Vehicle.cpp
-    src/Track.cpp
+    src/Collision.cpp
 )
 
 add_library(${PROJECT_NAME}::${target_name} ALIAS ${target_name})
@@ -16,7 +14,5 @@ target_include_directories(${target_name}
 )
 
 target_link_libraries(${target_name}
-    ${PROJECT_NAME}::physics
-    ${PROJECT_NAME}::collisions
     sfml-graphics
 )

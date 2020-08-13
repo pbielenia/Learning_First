@@ -6,7 +6,10 @@ namespace lf::models {
 
 class Track : public Drawable {
 public:
-    Track(const sf::Texture& texture) : Drawable{texture} {}
+    Track(const sf::Texture& texture_view, const sf::Texture& texture_collision)
+        : Drawable{texture_view, texture_collision}
+    {
+    }
 
 private:
     //

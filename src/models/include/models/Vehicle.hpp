@@ -6,7 +6,9 @@ namespace lf::models {
 
 class Vehicle : public Drawable {
 public:
-    Vehicle(const sf::Texture& texture, float scale = 1.0f);
+    Vehicle(const sf::Texture& texture_view,
+            const sf::Texture& texture_collision,
+            float scale = 1.0f);
 
     void set_position(float x, float y);
     void set_velocity(float velocity);

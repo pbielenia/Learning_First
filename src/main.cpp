@@ -10,20 +10,6 @@
 #include <optional>
 #include <thread>
 
-static const auto pi = std::acos(-1);
-
-float to_radians(float angle_in_degrees)
-{
-    static const auto multiplier = pi / 180.0f;
-    return angle_in_degrees * multiplier;
-}
-
-float to_degrees(float angle_in_radians)
-{
-    static const auto multiplier = 180.0f / pi;
-    return angle_in_radians * multiplier;
-}
-
 std::optional<sf::Texture> read_texture(const std::string& path)
 {
     sf::Texture texture;
@@ -37,7 +23,7 @@ std::optional<sf::Texture> read_texture(const std::string& path)
 int main()
 {
     std::cout << "Learning First start\n";
-    sf::RenderWindow window(sf::VideoMode(1000, 1080), "My window");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Learning First");
 
     const auto car_texture = read_texture("images/car.png");
     const auto car_collision_texture = read_texture("images/car-wheels.png");
@@ -134,9 +120,7 @@ int main()
 
         if (Collision::PixelPerfectTest(car.get_collision_sprite(),
                                         track.get_collision_sprite())) {
-            std::cout << "Collision!\n";
-        } else {
-            std::cout << "No collision!\n";
+            car.accelerate(-0.5f);
         }
 
         window.clear(sf::Color::Black);

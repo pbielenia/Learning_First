@@ -60,3 +60,13 @@ float Vehicle::get_velocity() const
 {
     return velocity;
 }
+
+sf::Vector2f Vehicle::get_position() const
+{
+    return Drawable::get_position();
+}
+
+float Vehicle::get_rotation() const
+{
+    return Drawable::get_rotation();
+}

@@ -26,6 +26,8 @@ protected:
     void set_position(float x, float y);
     void set_rotation(float angle);
     sf::Vector2f get_middle() const;
+    sf::Vector2f get_position() const;
+    float get_rotation() const;
     void move(const sf::Vector2f& translation_vector);
     void rotate(float rotation);
 

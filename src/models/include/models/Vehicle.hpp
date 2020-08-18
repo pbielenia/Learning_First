@@ -18,6 +18,8 @@ public:
     void update(float time_step_ms);
 
     float get_velocity() const;
+    sf::Vector2f get_position() const;
+    float get_rotation() const;
 
     const float max_velocity{7.0f};
     const float min_velocity{0.0f};

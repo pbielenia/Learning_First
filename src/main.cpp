@@ -20,10 +20,13 @@ std::optional<sf::Texture> read_texture(const std::string& path)
     }
 }
 
+static const auto pi = std::acos(-1);
+static const auto to_rad_multiplier = pi / 180.0f;
+
 int main()
 {
     std::cout << "Learning First start\n";
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Learning First");
+    sf::RenderWindow window(sf::VideoMode(920, 1080), "Learning First");
 
     const auto car_texture = read_texture("images/car.png");
     const auto car_collision_texture = read_texture("images/car-wheels.png");
@@ -38,6 +41,20 @@ int main()
     bool braking{false};
     bool rotating_left{false};
     bool rotating_right{false};
+
+    sf::Image image;
+    if (image.loadFromFile("images/custom_track-grass.png") == false) {
+        std::cout << "Reading image failed\n";
+        return -1;
+    }
+
+    // auto pixels_pointer = image.getPixelsPtr();
+    // for (unsigned width = 0; width < image.getSize().x; ++width) {
+    //     for (unsigned height = 0; height < image.getSize().y; ++height) {
+    //         std::cout << image.getPixel(width, height).toInteger() << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
 
     while (window.isOpen()) {
         sf::Event event;
@@ -127,8 +144,38 @@ int main()
 
         car.update(0.02);
 
+        auto driver_position(car.get_position());
+        auto checking_point(driver_position);
+        std::cout << "Driver position: " << driver_position.x << ", " << driver_position.y
+                  << "\n";
+
+        const auto car_rotation = car.get_rotation();
+
+        while (checking_point.x > 0U && checking_point.x < image.getSize().x
+               && checking_point.y > 0U && checking_point.y < image.getSize().y
+               && image.getPixel(checking_point.x, checking_point.y)
+                      == sf::Color::Transparent) {
+
+            checking_point.x += std::sin(car_rotation * to_rad_multiplier);
+            checking_point.y -= std::cos(car_rotation * to_rad_multiplier);
+        }
+
+        const sf::Vertex line[] = {sf::Vertex(driver_position),
+                                   sf::Vertex(checking_point)};
+
+        std::cout << "Checking point: " << checking_point.x << ", " << checking_point.y
+                  << "\n";
+
+        const auto line_length =
+            std::sqrt((driver_position.x - checking_point.x)
+                          * (driver_position.x - checking_point.x)
+                      + (driver_position.y - checking_point.y)
+                            * (driver_position.y - checking_point.y));
+        std::cout << "Length: " << line_length << " px\n";
+
         track.draw_at(window);
         car.draw_at(window);
+        window.draw(line, 2, sf::Lines);
         window.display();
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }

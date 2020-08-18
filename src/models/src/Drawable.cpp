@@ -49,6 +49,11 @@ sf::Vector2f Drawable::get_middle() const
     return {local_bound.width / 2.0f, local_bound.height / 2.0f};
 }
 
+sf::Vector2f Drawable::get_position() const
+{
+    return sprite_view.getPosition();
+}
+
 void Drawable::move(const sf::Vector2f& translation_vector)
 {
     sprite_view.move(translation_vector);
@@ -59,4 +64,9 @@ void Drawable::rotate(float rotation)
 {
     sprite_view.rotate(rotation);
     sprite_collision.rotate(rotation);
+}
+
+float Drawable::get_rotation() const
+{
+    return sprite_view.getRotation();
 }

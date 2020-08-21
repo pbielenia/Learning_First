@@ -2,18 +2,22 @@
 
 using namespace lf::models;
 
-auto Pedal::get_value() const noexcept -> ValueType
+void DriverInterface::set_acceleration(Pedal pedal_press)
 {
-    return value;
+    accelerator_pedal = std::move(pedal_press);
 }
 
-auto Pedal::narrow(ValueType to_narrow) noexcept -> ValueType
+void DriverInterface::set_braking(Pedal pedal_press)
 {
-    if (to_narrow > max_value) {
-        return max_value;
-    } else if (to_narrow < min_value) {
-        return min_value;
-    } else {
-        return to_narrow;
-    }
+    brake_pedal = std::move(pedal_press);
+}
+
+void DriverInterface::set_steering(SteeringWheel rotation)
+{
+    steering_wheel = std::move(rotation);
+}
+
+DriverView DriverInterface::get_view() const
+{
+    return DriverView{};
 }

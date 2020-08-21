@@ -15,8 +15,11 @@ target_include_directories(${target_name}
     PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${target_name}>
 )
 
+set_property(TARGET ${target_name} PROPERTY CXX_STANDARD 20)
+
 target_link_libraries(${target_name}
     ${PROJECT_NAME}::physics
     ${PROJECT_NAME}::collisions
+    helpers
     sfml-graphics
 )

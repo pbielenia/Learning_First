@@ -1,17 +1,20 @@
 cmake_minimum_required(VERSION 3.17)
-project(sfml-app)
+project(learningfirst)
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-add_subdirectory(src/collisions)
+# add_subdirectory(src/helpers)
+# add_subdirectory(src/collisions)
 add_subdirectory(src/physics)
-add_subdirectory(src/models)
+# add_subdirectory(src/models)
 
-add_executable(sfml-app src/main.cpp)
-set_property(TARGET sfml-app PROPERTY CXX_STANDARD 17)
+set(target_name ${PROJECT_NAME})
 
-target_link_libraries(sfml-app
+add_executable(${target_name} src/main.cpp)
+set_property(TARGET ${target_name} PROPERTY CXX_STANDARD 20)
+
+target_link_libraries(${target_name}
     sfml-graphics
-    sfml-app::models
-    sfml-app::collisions
+    ${PROJECT_NAME}-physics
+    # ${PROJECT_NAME}::collisions
 )

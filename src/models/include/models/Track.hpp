@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Drawable.hpp"
+#include "Vehicle.hpp"
+
+#include <memory>
+#include <vector>
 
 namespace lf::models {
 
@@ -11,8 +15,10 @@ public:
     {
     }
 
+    void put_vehicle(std::unique_ptr<Vehicle> vehicle);
+
 private:
-    //
+    std::vector<std::unique_ptr<Vehicle>> vehicles_on;
 };
 
 } // namespace lf::models

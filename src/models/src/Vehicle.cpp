@@ -1,6 +1,6 @@
 #include "Vehicle.hpp"
 
-#include <cmath>
+#include "helpers/math.hpp"
 
 using namespace lf::models;
 
@@ -17,48 +17,13 @@ void Vehicle::set_position(float x, float y)
     Drawable::set_position(x, y);
 }
 
-void Vehicle::set_velocity(float velocity)
-{
-    this->velocity = velocity;
-}
-
-void Vehicle::rotate(float rotation_deg)
-{
-    static const auto pi = std::acos(-1);
-    static const auto multiplier = pi / 180.0f;
-    steering_rad += rotation_deg * multiplier;
-}
-
-void Vehicle::accelerate(float acceleration)
-{
-    velocity += acceleration;
-    if (velocity > max_velocity) {
-        velocity = max_velocity;
-    } else if (velocity < min_velocity) {
-        velocity = min_velocity;
-    }
-}
-
-void Vehicle::set_steering(float steering_deg)
-{
-    static const auto pi = std::acos(-1);
-    static const auto multiplier = pi / 180.0f;
-    steering_rad = steering_deg * multiplier;
-}
-
 void Vehicle::update(float time_step_ms)
 {
-    static const auto pi = std::acos(-1);
-    static const auto multiplier = 180.0f / pi;
-
-    sf::Vector2f steering_vect{std::sin(steering_rad), -std::cos(steering_rad)};
-    Drawable::move(steering_vect * velocity);
-    Drawable::set_rotation(steering_rad * multiplier);
-}
-
-float Vehicle::get_velocity() const
-{
-    return velocity;
+    const auto steering_angle = get_steering_angle();
+    sf::Vector2f steering_vect{helpers::sin_deg(steering_angle),
+                               -helpers::sin_deg(steering_angle)};
+    Drawable::move(steering_vect * static_cast<float>(dynamics.velocity.get_value()));
+    Drawable::set_rotation(steering_angle);
 }
 
 sf::Vector2f Vehicle::get_position() const
@@ -69,4 +34,9 @@ sf::Vector2f Vehicle::get_position() const
 float Vehicle::get_rotation() const
 {
     return Drawable::get_rotation();
+}
+
+float Vehicle::get_steering_angle() const
+{
+    return driver.get_steering().get_value() / 3;
 }

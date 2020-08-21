@@ -1,36 +1,30 @@
 #pragma once
 
+#include "helpers/NarrowedValue.hpp"
+
 namespace lf::models {
 
-class Pedal {
-public:
-    using ValueType = unsigned;
+using Pedal = lf::helpers::NarrowedValue<unsigned, 0U, 100U>;
+using SteeringWheel = lf::helpers::NarrowedValue<int, -900, 900>;
 
-    ValueType get_value() const noexcept { return value; }
-
-    template<typename T> void operator=(T new_value)
-    {
-        value = narrow(to_value_type(new_value));
-    }
-
-private:
-    template<typename T> static ValueType to_value_type(T other)
-    {
-        return static_cast<ValueType>(other);
-    }
-
-    static ValueType narrow(ValueType to_narrow) noexcept;
-
-    static const ValueType max_value{100U};
-    static const ValueType min_value{0U};
-
-    ValueType value{0U};
+struct DriverView {
+    float front_distance;
 };
 
 class DriverInterface {
 public:
-    //
+    void set_acceleration(Pedal pedal_press);
+    void set_braking(Pedal pedal_press);
+    void set_steering(SteeringWheel rotation);
+    const Pedal& get_acceleration() const noexcept;
+    const Pedal& get_braking() const noexcept;
+    const SteeringWheel& get_steering() const noexcept;
+    DriverView get_view() const;
+
 private:
+    Pedal accelerator_pedal{0U};
+    Pedal brake_pedal{0U};
+    SteeringWheel steering_wheel{0U};
 };
 
 } // namespace lf::models

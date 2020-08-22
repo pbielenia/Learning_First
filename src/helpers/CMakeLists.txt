@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-set(target_name helpers)
+set(target_name ${PROJECT_NAME}-helpers)
 
 add_library(${target_name} INTERFACE)
 

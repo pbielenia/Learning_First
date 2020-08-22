@@ -2,7 +2,8 @@
 // #include "models/Track.hpp"
 // #include "models/Vehicle.hpp"
 
-#include "physics/processing/BasicProcessing.hpp"
+#include "components/Vehicle.hpp"
+#include "physics/processing/processing.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <chrono>
@@ -27,8 +28,23 @@ static const auto to_rad_multiplier = pi / 180.0f;
 
 int main()
 {
-    lf::physics::processing::BasicProcessing a;
     std::cout << "Learning First start\n";
+
+    lf::components::Vehicle vehicle;
+    // todo: Vehicle should't make accesible its model,
+    //       may be instead derive from some abstract class,
+    //       which has an attribute "model" or a virtual method "get_model()".
+    lf::physics::processing::process(vehicle.get_model());
+
+    // Next:
+    //      1. Check if model works properly without graphics.
+    //      2. Create graphical vehicle representation.
+    //      3. Create a track model and graphical representation.
+    //      4. Connect the whole to drive a car using keyboard.
+    //      5. Handle collisions.
+    //      6. Draw the line.
+    //      7. Draw the lines.
+
     sf::RenderWindow window(sf::VideoMode(920, 1080), "Learning First");
 
     // const auto car_texture = read_texture("images/car.png");

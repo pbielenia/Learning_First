@@ -10,14 +10,14 @@ struct Vehicle {
     {
     }
 
-    sf::Vector2f position;
-    float rotation;
-    float velocity;
-    float acceleration;
+    sf::Vector2f position{0.0f, 0.0f};
+    float rotation{0.0f};
+    float velocity{0.0f};
+    float acceleration{0.0f};
 
-    unsigned accelerating;
-    unsigned braking;
-    int steering;
+    unsigned accelerating{0};
+    unsigned braking{0};
+    int steering{0};
 
     const unsigned max_speed;
     const unsigned max_acceleration;

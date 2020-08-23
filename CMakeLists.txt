@@ -4,7 +4,7 @@ project(learningfirst)
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 add_subdirectory(src/helpers)
-# add_subdirectory(src/collisions)
+add_subdirectory(src/collisions)
 add_subdirectory(src/physics)
 add_subdirectory(src/components)
 # add_subdirectory(src/models)
@@ -18,5 +18,5 @@ target_link_libraries(${target_name}
     sfml-graphics
     ${PROJECT_NAME}-physics
     ${PROJECT_NAME}-components
-    # ${PROJECT_NAME}::collisions
+    ${PROJECT_NAME}-collisions
 )

@@ -2,14 +2,22 @@
 
 #include "physics/models/Vehicle.hpp"
 
+#include <SFML/Graphics.hpp>
+#include <iostream>
+
 namespace lf::components {
 
 class Vehicle {
 public:
-    Vehicle()
+    Vehicle(const sf::Texture& texture_view, float scale = 1.0f)
     {
         model.position.x = 500;
         model.position.y = 500;
+        sprite.setTexture(texture_view);
+        sprite.setScale(scale, scale);
+
+        const auto texture_size = texture_view.getSize();
+        sprite.setOrigin(texture_size.x / 2.0f, texture_size.y / 2.0f);
     }
 
     void set_accelerating(unsigned pedal_press) noexcept
@@ -21,15 +29,48 @@ public:
 
     void set_steering(int wheel_rotation) noexcept
     {
-        model.steering = wheel_rotation / 18U;
+        model.steering = wheel_rotation / 10;
+    }
+
+    void turn_wheel(int wheel_rotation_change) noexcept
+    {
+        model.steering += wheel_rotation_change;
+        std::cout << "PRE model.steering = " << model.steering << "\n";
+        if (model.steering > model.max_steering) {
+            model.steering = model.max_steering;
+        } else if (model.steering < -model.max_steering) {
+            model.steering = -model.max_steering;
+        }
+    }
+
+    void free_steering()
+    {
+        constexpr auto free_steering_change = 1;
+        if (model.steering > free_steering_change) {
+            model.steering -= free_steering_change;
+        } else if (model.steering < -free_steering_change) {
+            model.steering += free_steering_change;
+        } else {
+            model.steering = 0;
+        }
+    }
+
+    void update_sprite()
+    {
+        sprite.setRotation(model.rotation);
+        sprite.setPosition(static_cast<float>(model.position.x),
+                           static_cast<float>(model.position.y));
+        std::cout << "sprite.rotation = " << sprite.getRotation() << "\n";
     }
 
     physics::models::Vehicle& get_model() { return model; }
+    const sf::Sprite& get_sprite() const { return sprite; }
 
 private:
     // drawing
+    sf::Sprite sprite;
     // model
-    physics::models::Vehicle model{10, 2};
+    physics::models::Vehicle model{4, 1};
     // interface
 };
 

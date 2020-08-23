@@ -1,4 +1,4 @@
-// #include "collisions/Collision.hpp"
+#include "collisions/Collision.hpp"
 // #include "models/Track.hpp"
 // #include "models/Vehicle.hpp"
 
@@ -13,15 +13,15 @@
 #include <optional>
 #include <thread>
 
-// std::optional<sf::Texture> read_texture(const std::string& path)
-// {
-//     sf::Texture texture;
-//     if (Collision::CreateTextureAndBitmask(texture, path) == false) {
-//         return {};
-//     } else {
-//         return texture;
-//     }
-// }
+std::optional<sf::Texture> read_texture(const std::string& path)
+{
+    sf::Texture texture;
+    if (Collision::CreateTextureAndBitmask(texture, path) == false) {
+        return {};
+    } else {
+        return texture;
+    }
+}
 
 static const auto pi = std::acos(-1);
 static const auto to_rad_multiplier = pi / 180.0f;
@@ -30,7 +30,8 @@ int main()
 {
     std::cout << "Learning First start\n";
 
-    lf::components::Vehicle vehicle;
+    const auto car_texture = read_texture("images/car.png");
+    lf::components::Vehicle vehicle{car_texture.value(), 0.1f};
     // todo: Vehicle should't make accesible its model,
     //       may be instead derive from some abstract class,
     //       which has an attribute "model" or a virtual method "get_model()".
@@ -56,10 +57,10 @@ int main()
     // const auto track_collision_texture = read_texture("images/custom_track-grass.png");
     // lf::models::Track track{track_texture.value(), track_collision_texture.value()};
 
-    // bool accelerating{false};
-    // bool braking{false};
-    // bool rotating_left{false};
-    // bool rotating_right{false};
+    bool accelerating{false};
+    bool braking{false};
+    bool rotating_left{false};
+    bool rotating_right{false};
 
     // sf::Image image;
     // if (image.loadFromFile("images/custom_track-grass.png") == false) {
@@ -75,128 +76,158 @@ int main()
     // //     std::cout << "\n";
     // // }
 
-    // while (window.isOpen()) {
-    //     sf::Event event;
-    //     while (window.pollEvent(event)) {
-    //         switch (event.type) {
-    //         case sf::Event::Closed:
-    //             window.close();
-    //             break;
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            switch (event.type) {
+            case sf::Event::Closed:
+                window.close();
+                break;
 
-    //         case sf::Event::KeyPressed:
-    //             switch (event.key.code) {
-    //             case sf::Keyboard::Escape: {
-    //                 window.close();
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Left: {
-    //                 rotating_left = true;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Right: {
-    //                 rotating_right = true;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Up: {
-    //                 accelerating = true;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Down: {
-    //                 braking = true;
-    //                 break;
-    //             }
-    //             default:
-    //                 break;
-    //             }
-    //             break;
+            case sf::Event::KeyPressed:
+                switch (event.key.code) {
+                case sf::Keyboard::Escape: {
+                    window.close();
+                    break;
+                }
+                case sf::Keyboard::Left: {
+                    rotating_left = true;
+                    break;
+                }
+                case sf::Keyboard::Right: {
+                    rotating_right = true;
+                    break;
+                }
+                case sf::Keyboard::Up: {
+                    accelerating = true;
+                    break;
+                }
+                case sf::Keyboard::Down: {
+                    braking = true;
+                    break;
+                }
+                default:
+                    break;
+                }
+                break;
 
-    //         case sf::Event::KeyReleased:
-    //             switch (event.key.code) {
-    //             case sf::Keyboard::Left: {
-    //                 rotating_left = false;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Right: {
-    //                 rotating_right = false;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Up: {
-    //                 accelerating = false;
-    //                 break;
-    //             }
-    //             case sf::Keyboard::Down: {
-    //                 braking = false;
-    //                 break;
-    //             }
-    //             default:
-    //                 break;
-    //             }
-    //             break;
-    //         }
-    //     }
+            case sf::Event::KeyReleased:
+                switch (event.key.code) {
+                case sf::Keyboard::Left: {
+                    rotating_left = false;
+                    break;
+                }
+                case sf::Keyboard::Right: {
+                    rotating_right = false;
+                    break;
+                }
+                case sf::Keyboard::Up: {
+                    accelerating = false;
+                    break;
+                }
+                case sf::Keyboard::Down: {
+                    braking = false;
+                    break;
+                }
+                default:
+                    break;
+                }
+                break;
+            }
+        }
 
-    //     if (braking != accelerating) {
-    //         if (braking) {
-    //             car.accelerate(-1.0f + car.get_velocity() / car.max_velocity);
-    //         } else if (accelerating) {
-    //             car.accelerate(1.0f - car.get_velocity() / car.max_velocity);
-    //         }
-    //     } else {
-    //         const auto car_slowing = car.get_velocity() * 0.02f;
-    //         car.accelerate((car_slowing) > 0.01f ? -car_slowing : -1.0f);
-    //     }
+        if (braking) {
+            std::cout << "Braking\n";
+            vehicle.set_braking(100);
+        }
+        if (accelerating) {
+            std::cout << "Accelerating\n";
+            vehicle.set_accelerating(100);
+        }
+        if (rotating_left != rotating_right) {
+            if (rotating_left) {
+                std::cout << "Steering left\n";
+                vehicle.turn_wheel(-1);
+            } else if (rotating_right) {
+                std::cout << "Steering right\n";
+                vehicle.turn_wheel(1);
+            }
+        } else {
+            std::cout << "Steering straight\n";
+            vehicle.free_steering();
+        }
 
-    //     if (rotating_left != rotating_right) {
-    //         if (rotating_left) {
-    //             car.rotate(-2);
-    //         } else if (rotating_right) {
-    //             car.rotate(2);
-    //         }
-    //     }
+        // if (braking != accelerating) {
+        //     if (braking) {
+        //         car.accelerate(-1.0f + car.get_velocity() / car.max_velocity);
+        //     } else if (accelerating) {
+        //         car.accelerate(1.0f - car.get_velocity() / car.max_velocity);
+        //     }
+        // } else {
+        //     const auto car_slowing = car.get_velocity() * 0.02f;
+        //     car.accelerate((car_slowing) > 0.01f ? -car_slowing : -1.0f);
+        // }
 
-    //     if (Collision::PixelPerfectTest(car.get_collision_sprite(),
-    //                                     track.get_collision_sprite())) {
-    //         car.accelerate(-0.5f);
-    //     }
+        // if (rotating_left != rotating_right) {
+        //     if (rotating_left) {
+        //         car.rotate(-2);
+        //     } else if (rotating_right) {
+        //         car.rotate(2);
+        //     }
+        // }
 
-    //     window.clear(sf::Color::Black);
+        // if (Collision::PixelPerfectTest(car.get_collision_sprite(),
+        //                                 track.get_collision_sprite())) {
+        //     car.accelerate(-0.5f);
+        // }
 
-    //     car.update(0.02);
+        window.clear(sf::Color::Black);
 
-    //     auto driver_position(car.get_position());
-    //     auto checking_point(driver_position);
-    //     std::cout << "Driver position: " << driver_position.x << ", " <<
-    //     driver_position.y
-    //               << "\n";
+        const auto model = vehicle.get_model();
+        std::cout << "Position: " << model.position.x << ", " << model.position.y << "\n";
+        std::cout << "Rotation: " << model.rotation << "\n";
 
-    //     const auto car_rotation = car.get_rotation();
+        lf::physics::processing::process(vehicle.get_model());
+        vehicle.update_sprite();
 
-    //     while (checking_point.x > 0U && checking_point.x < image.getSize().x
-    //            && checking_point.y > 0U && checking_point.y < image.getSize().y
-    //            && image.getPixel(checking_point.x, checking_point.y)
-    //                   == sf::Color::Transparent) {
+        // car.update(0.02);
 
-    //         checking_point.x += std::sin(car_rotation * to_rad_multiplier);
-    //         checking_point.y -= std::cos(car_rotation * to_rad_multiplier);
-    //     }
+        // auto driver_position(car.get_position());
+        // auto checking_point(driver_position);
+        // std::cout << "Driver position: " << driver_position.x << ", " <<
+        // driver_position.y
+        //           << "\n";
 
-    //     const sf::Vertex line[] = {sf::Vertex(driver_position),
-    //                                sf::Vertex(checking_point)};
+        // const auto car_rotation = car.get_rotation();
 
-    //     std::cout << "Checking point: " << checking_point.x << ", " << checking_point.y
-    //               << "\n";
+        // while (checking_point.x > 0U && checking_point.x < image.getSize().x
+        //        && checking_point.y > 0U && checking_point.y < image.getSize().y
+        //        && image.getPixel(checking_point.x, checking_point.y)
+        //               == sf::Color::Transparent) {
 
-    //     const auto line_length =
-    //         std::sqrt((driver_position.x - checking_point.x)
-    //                       * (driver_position.x - checking_point.x)
-    //                   + (driver_position.y - checking_point.y)
-    //                         * (driver_position.y - checking_point.y));
-    //     std::cout << "Length: " << line_length << " px\n";
+        //     checking_point.x += std::sin(car_rotation * to_rad_multiplier);
+        //     checking_point.y -= std::cos(car_rotation * to_rad_multiplier);
+        // }
 
-    //     track.draw_at(window);
-    //     car.draw_at(window);
-    //     window.draw(line, 2, sf::Lines);
-    //     window.display();
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    // }
+        // const sf::Vertex line[] = {sf::Vertex(driver_position),
+        //                            sf::Vertex(checking_point)};
+
+        // std::cout << "Checking point: " << checking_point.x << ", " << checking_point.y
+        //           << "\n";
+
+        // const auto line_length =
+        //     std::sqrt((driver_position.x - checking_point.x)
+        //                   * (driver_position.x - checking_point.x)
+        //               + (driver_position.y - checking_point.y)
+        //                     * (driver_position.y - checking_point.y));
+        // std::cout << "Length: " << line_length << " px\n";
+
+        // track.draw_at(window);
+        // car.draw_at(window);
+        // window.draw(line, 2, sf::Lines);
+
+        window.draw(vehicle.get_sprite());
+        window.display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
 }

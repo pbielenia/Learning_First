@@ -2,6 +2,7 @@
 // #include "models/Track.hpp"
 // #include "models/Vehicle.hpp"
 
+#include "components/Track.hpp"
 #include "components/Vehicle.hpp"
 #include "physics/processing/processing.hpp"
 
@@ -33,9 +34,11 @@ struct DriverInput {
 
 struct Game {
 
-    Game(lf::components::Vehicle vehicle,
+    Game(lf::components::Track track,
+         lf::components::Vehicle vehicle,
          std::function<void(const DriverInput&, lf::components::Vehicle&)> process_input)
-        : vehicle{std::move(vehicle)}, process_input{process_input}
+        : track{std::move(track)}, vehicle{std::move(vehicle)}, process_input{
+                                                                    process_input}
 
     {
     }
@@ -117,13 +120,15 @@ struct Game {
     void draw()
     {
         window.clear(sf::Color::Black);
+        window.draw(track.sprite);
         window.draw(vehicle.get_sprite());
         window.display();
     }
 
-    sf::RenderWindow window{sf::VideoMode(920, 1080), "Learning First"};
+    sf::RenderWindow window{sf::VideoMode(1920, 1080), "Learning First"};
     sf::Event event;
     lf::components::Vehicle vehicle;
+    lf::components::Track track;
     std::function<void(const DriverInput&, lf::components::Vehicle&)> process_input;
     DriverInput driver_input;
 };
@@ -152,11 +157,13 @@ int main()
     // lf::models::Vehicle car{car_texture.value(), car_collision_texture.value(), 0.1f};
     // car.set_position(500, 500);
 
-    // const auto track_texture = read_texture("images/custom_track.png");
+    const auto track_texture = read_texture("images/custom_track.png");
     // const auto track_collision_texture = read_texture("images/custom_track-grass.png");
     // lf::models::Track track{track_texture.value(), track_collision_texture.value()};
+    lf::components::Track track(track_texture.value());
 
-    Game game{std::move(vehicle),
+    Game game{std::move(track),
+              std::move(vehicle),
               [](const DriverInput& driver, lf::components::Vehicle& vehicle) {
                   if (driver.is_braking) {
                       std::cout << "Braking\n";

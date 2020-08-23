@@ -32,14 +32,17 @@ void process(models::Vehicle& vehicle)
     if (vehicle.accelerating > vehicle.braking) {
         // todo: core about resetting accelerating and braking values
         vehicle.velocity += 0.2;
-        if (vehicle.velocity > vehicle.max_speed) {
-            vehicle.velocity = vehicle.max_speed;
-        }
     } else if (vehicle.braking > vehicle.accelerating) {
         vehicle.velocity -= 0.1;
-        if (vehicle.velocity < 0) {
-            vehicle.velocity = 0;
-        }
+
+    } else {
+        vehicle.velocity -= 0.02;
+    }
+
+    if (vehicle.velocity > vehicle.max_speed) {
+        vehicle.velocity = vehicle.max_speed;
+    } else if (vehicle.velocity < 0) {
+        vehicle.velocity = 0;
     }
 
     vehicle.accelerating = 0;

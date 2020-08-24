@@ -9,15 +9,21 @@ namespace lf::components {
 
 class Vehicle {
 public:
-    Vehicle(const sf::Texture& texture_view, float scale = 1.0f)
+    Vehicle(const sf::Texture& texture_view,
+            const sf::Texture& texture_collision,
+            float scale = 1.0f)
+        : sprite{texture_view}, model{4, 1, texture_collision}
     {
         model.position.x = 500;
         model.position.y = 500;
-        sprite.setTexture(texture_view);
+        model.sprite.setPosition(500, 500);
+        model.sprite.setScale(scale, scale);
+        sprite.setPosition(500, 500);
         sprite.setScale(scale, scale);
 
         const auto texture_size = texture_view.getSize();
         sprite.setOrigin(texture_size.x / 2.0f, texture_size.y / 2.0f);
+        model.sprite.setOrigin(texture_size.x / 2.0f, texture_size.y / 2.0f);
     }
 
     void set_accelerating(unsigned pedal_press) noexcept
@@ -55,12 +61,14 @@ public:
         }
     }
 
-    void update_sprite()
+    void update()
     {
         sprite.setRotation(model.rotation);
         sprite.setPosition(static_cast<float>(model.position.x),
                            static_cast<float>(model.position.y));
-        std::cout << "sprite.rotation = " << sprite.getRotation() << "\n";
+        model.sprite.setRotation(model.rotation);
+        model.sprite.setPosition(static_cast<float>(model.position.x),
+                                 static_cast<float>(model.position.y));
     }
 
     physics::models::Vehicle& get_model() { return model; }
@@ -70,7 +78,7 @@ private:
     // drawing
     sf::Sprite sprite;
     // model
-    physics::models::Vehicle model{4, 1};
+    physics::models::Vehicle model;
     // interface
 };
 

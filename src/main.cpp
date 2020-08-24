@@ -49,9 +49,11 @@ struct Game {
             while (window.pollEvent(event)) {
                 analyze_event();
             }
+            // todo: get view for the vehicle and pass to the process_input
             process_input(driver_input, vehicle);
-            lf::physics::processing::process(vehicle.get_model());
-            vehicle.update_sprite();
+            lf::physics::processing::process(vehicle.get_model(),
+                                             track.model); // todo - pass the track also
+            vehicle.update();
             draw();
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
@@ -59,7 +61,6 @@ struct Game {
 
     void analyze_event()
     {
-
         switch (event.type) {
         case sf::Event::Closed:
             window.close();
@@ -119,9 +120,10 @@ struct Game {
 
     void draw()
     {
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::White);
         window.draw(track.sprite);
-        window.draw(vehicle.get_sprite());
+        // window.draw(vehicle.get_sprite());
+        window.draw(vehicle.get_model().sprite);
         window.display();
     }
 
@@ -138,29 +140,23 @@ int main()
     std::cout << "Learning First start\n";
 
     const auto car_texture = read_texture("images/car.png");
-    lf::components::Vehicle vehicle{car_texture.value(), 0.1f};
+    const auto car_collision_texture = read_texture("images/car-wheels.png");
+    lf::components::Vehicle vehicle{car_texture.value(),
+                                    car_collision_texture.value(),
+                                    0.1f};
     // todo: Vehicle should't make accesible its model,
     //       may be instead derive from some abstract class,
     //       which has an attribute "model" or a virtual method "get_model()".
 
     // Next:
-    //      1. Check if model works properly without graphics.
-    //      2. Create graphical vehicle representation.
-    //      3. Create a track model and graphical representation.
-    //      4. Connect the whole to drive a car using keyboard.
     //      5. Handle collisions.
     //      6. Draw the line.
     //      7. Draw the lines.
 
-    // const auto car_texture = read_texture("images/car.png");
-    // const auto car_collision_texture = read_texture("images/car-wheels.png");
-    // lf::models::Vehicle car{car_texture.value(), car_collision_texture.value(), 0.1f};
-    // car.set_position(500, 500);
-
     const auto track_texture = read_texture("images/custom_track.png");
-    // const auto track_collision_texture = read_texture("images/custom_track-grass.png");
-    // lf::models::Track track{track_texture.value(), track_collision_texture.value()};
-    lf::components::Track track(track_texture.value());
+    const auto track_collision_texture = read_texture("images/custom_track-grass.png");
+    lf::components::Track track(track_collision_texture.value(),
+                                track_collision_texture.value());
 
     Game game{std::move(track),
               std::move(vehicle),

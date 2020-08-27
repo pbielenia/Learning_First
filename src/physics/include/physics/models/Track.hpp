@@ -5,9 +5,12 @@
 namespace lf::physics::models {
 
 struct Track {
-    Track(const sf::Texture& texture) : sprite{texture} {}
+    Track(const sf::Texture& limits, float scale = 1.0f) : limits{limits}
+    {
+        this->limits.setScale(scale, scale);
+    }
 
-    sf::Sprite sprite;
+    sf::Sprite limits;
 };
 
 } // namespace lf::physics::models

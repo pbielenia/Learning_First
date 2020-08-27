@@ -1,13 +1,17 @@
 #pragma once
 
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace lf::physics::models {
 
 struct Vehicle {
-    Vehicle(unsigned max_speed, unsigned max_acceleration, const sf::Texture& texture)
-        : max_speed{max_speed}, max_acceleration{max_acceleration}, sprite{texture}
+    Vehicle(unsigned max_speed,
+            unsigned max_acceleration,
+            const sf::Texture& wheels_texture,
+            float scale)
+        : max_speed{max_speed}, max_acceleration{max_acceleration}, wheels{wheels_texture}
     {
+        wheels.setScale(scale, scale);
     }
 
     sf::Vector2f position{0.0f, 0.0f};
@@ -15,11 +19,11 @@ struct Vehicle {
     float velocity{0.0f};
     float acceleration{0.0f};
 
-    unsigned accelerating{0};
-    unsigned braking{0};
-    int steering{0};
+    bool accelerating{false};
+    bool braking{false};
+    float wheels_angle{0.0f};
 
-    sf::Sprite sprite;
+    sf::Sprite wheels;
 
     const unsigned max_speed;
     const unsigned max_acceleration;

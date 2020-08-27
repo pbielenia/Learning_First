@@ -10,6 +10,9 @@ int main()
     std::cout << "Learning First start\n";
     lf::game::engine::TexturesLoader textures_loader{"images"};
     textures_loader.load();
+    if (textures_loader.has_texture("car.png")) {
+        const auto car_tex = textures_loader.get_texture("car.png");
+    }
 
     // sf::Image image;
     // if (image.loadFromFile("images/custom_track-grass.png") == false) {

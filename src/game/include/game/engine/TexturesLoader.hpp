@@ -32,17 +32,21 @@ public:
         }
     }
 
-private:
-    std::optional<sf::Texture> read_texture(const std::string& path)
+    bool has_texture(const std::string& filename) const
     {
-        sf::Texture texture;
-        if (Collision::CreateTextureAndBitmask(texture, path) == false) {
-            return {};
-        } else {
-            return texture;
+        return textures.count(filename);
+    }
+
+    const sf::Texture& get_texture(const std::string& filename) const
+    {
+        try {
+            return textures.at(filename);
+        } catch (const std::exception& e) {
+            throw std::runtime_error("Texture from file " + filename + " not found.");
         }
     }
 
+private:
     std::string path;
     std::map<std::filesystem::path, sf::Texture> textures;
 };

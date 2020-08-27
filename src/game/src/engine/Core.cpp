@@ -48,6 +48,7 @@ void Core::process_input()
 void Core::process_models()
 {
     physics::processing::process(car.model, track.model);
+    car.update_drawing();
 }
 
 void Core::analyze_event()

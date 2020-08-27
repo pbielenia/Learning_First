@@ -42,6 +42,20 @@ struct Car {
         drawing.setScale(textures.scale, textures.scale);
     }
 
+    void set_position(float x, float y)
+    {
+        model.position.x = x;
+        model.position.y = y;
+    }
+
+    void set_rotation(float degrees) { model.rotation = degrees; }
+
+    void update_drawing()
+    {
+        drawing.setPosition(model.position);
+        drawing.setRotation(model.rotation);
+    }
+
     void set_steering(const Steering& steering)
     {
         model.accelerating = steering.accelerating;

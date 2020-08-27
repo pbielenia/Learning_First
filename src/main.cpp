@@ -25,12 +25,34 @@ create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
     }
 }
 
+lf::game::objects::Track
+create_track_object(const lf::game::engine::TexturesLoader& textures_loader)
+{
+    try {
+        lf::game::objects::Track::TexturesPack textures{
+            textures_loader.get_texture("custom_track.png"),
+            textures_loader.get_texture("custom_track-grass.png")};
+
+        return {textures};
+
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Creating a track object has failed due to: "
+                                 + std::string(e.what()));
+    }
+}
+
 int main()
 {
     std::cout << "Learning First start\n";
     lf::game::engine::TexturesLoader textures_loader{"images"};
     textures_loader.load();
     auto car = create_car_object(textures_loader);
+    car.set_position(1400.0f, 100.0f);
+    car.set_rotation(90.0f);
+    auto track = create_track_object(textures_loader);
+
+    lf::game::engine::Core game{std::move(car), std::move(track)};
+    game.run();
 
     // sf::Image image;
     // if (image.loadFromFile("images/custom_track-grass.png") == false) {

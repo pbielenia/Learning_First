@@ -5,14 +5,32 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+lf::game::objects::Car
+create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
+{
+    try {
+        lf::game::objects::Car::TexturesPack textures{
+            textures_loader.get_texture("car.png"),
+            textures_loader.get_texture("car-wheels.png"),
+            0.1f};
+        lf::game::objects::Car::TechnicalSpecs technical_specs;
+        technical_specs.max_speed = 10;
+        technical_specs.max_acceleration = 2;
+
+        return {textures, technical_specs};
+
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Creating a car object has failed due to: "
+                                 + std::string(e.what()));
+    }
+}
+
 int main()
 {
     std::cout << "Learning First start\n";
     lf::game::engine::TexturesLoader textures_loader{"images"};
     textures_loader.load();
-    if (textures_loader.has_texture("car.png")) {
-        const auto car_tex = textures_loader.get_texture("car.png");
-    }
+    auto car = create_car_object(textures_loader);
 
     // sf::Image image;
     // if (image.loadFromFile("images/custom_track-grass.png") == false) {

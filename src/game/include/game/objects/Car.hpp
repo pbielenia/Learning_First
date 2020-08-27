@@ -40,12 +40,19 @@ struct Car {
 
     {
         drawing.setScale(textures.scale, textures.scale);
+
+        const auto dimensions = drawing.getLocalBounds();
+        const auto center_x = dimensions.width / 2.0f;
+        const auto center_y = dimensions.height / 2.0f;
+        drawing.setOrigin(center_x, center_y);
+        model.wheels.setOrigin(center_x, center_y);
     }
 
     void set_position(float x, float y)
     {
         model.position.x = x;
         model.position.y = y;
+        model.wheels.setPosition(x, y);
     }
 
     void set_rotation(float degrees) { model.rotation = degrees; }

@@ -14,14 +14,14 @@ struct Vehicle {
         wheels.setScale(scale, scale);
     }
 
-    sf::Vector2f position{0.0f, 0.0f};
-    float rotation{0.0f};
-    float velocity{0.0f};
-    float acceleration{0.0f};
+    sf::Vector2f position{0.0F, 0.0F};
+    float rotation{0.0F};
+    float velocity{0.0F};
+    float acceleration{0.0F};
 
     bool accelerating{false};
     bool braking{false};
-    float wheels_angle{0.0f};
+    float wheels_angle{0.0F};
 
     sf::Sprite wheels;
 

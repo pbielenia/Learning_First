@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace lf::game::objects {
+namespace lf::game::environment {
 
 struct Track {
 

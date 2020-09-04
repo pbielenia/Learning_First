@@ -1,19 +1,20 @@
-
-#include "game/engine/Core.hpp"
+#include "game/engine/Engine.hpp"
 #include "game/engine/TexturesLoader.hpp"
+#include "game/environment/Environment.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <game/driver/KeyboardInput.hpp>
 #include <iostream>
 
-lf::game::objects::Car
+lf::game::environment::Car
 create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
 {
     try {
-        lf::game::objects::Car::TexturesPack textures{
+        lf::game::environment::Car::TexturesPack textures{
             textures_loader.get_texture("car.png"),
             textures_loader.get_texture("car-wheels.png"),
             0.1f};
-        lf::game::objects::Car::TechnicalSpecs technical_specs;
+        lf::game::environment::Car::TechnicalSpecs technical_specs;
         technical_specs.max_speed = 10;
         technical_specs.max_acceleration = 5;
 
@@ -25,11 +26,11 @@ create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
     }
 }
 
-lf::game::objects::Track
+lf::game::environment::Track
 create_track_object(const lf::game::engine::TexturesLoader& textures_loader)
 {
     try {
-        lf::game::objects::Track::TexturesPack textures{
+        lf::game::environment::Track::TexturesPack textures{
             textures_loader.get_texture("custom_track.png"),
             textures_loader.get_texture("custom_track-grass.png")};
 
@@ -51,7 +52,10 @@ int main()
     car.set_rotation(90.0f);
     auto track = create_track_object(textures_loader);
 
-    lf::game::engine::Core game{std::move(car), std::move(track)};
+    lf::game::environment::Environment environment{std::move(car), std::move(track)};
+    lf::game::engine::Engine game{std::move(environment)};
+    auto driver = lf::game::driver::KeyboardInput::create(game.get_event());
+    game.set_driver(std::move(driver));
     game.run();
 
     // sf::Image image;

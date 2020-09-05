@@ -59,6 +59,10 @@ void Engine::draw()
     window.draw(environment.track.drawing);
     window.draw(environment.car.drawing);
     window.draw(lines.front);
+    window.draw(lines.left);
+    window.draw(lines.right);
+    window.draw(lines.front_left);
+    window.draw(lines.front_right);
     window.display();
 }
 

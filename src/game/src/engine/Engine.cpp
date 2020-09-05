@@ -14,6 +14,7 @@ void Engine::run()
         do {
             process_input();
         } while (window.pollEvent(event));
+        lines = distance_meter.get_lines(environment);
         process_models();
         draw();
         sleep();
@@ -57,6 +58,7 @@ void Engine::draw()
     window.clear(sf::Color::Black);
     window.draw(environment.track.drawing);
     window.draw(environment.car.drawing);
+    window.draw(lines.front);
     window.display();
 }
 

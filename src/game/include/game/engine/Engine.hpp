@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DistanceMeter.hpp"
 #include "game/driver/Driver.hpp"
 #include "game/environment/Environment.hpp"
 
@@ -26,8 +27,10 @@ private:
     sf::Event event;
 
     driver::Steering steering;
+    DistanceMeter::Lines lines;
     std::unique_ptr<driver::Driver> driver;
     environment::Environment environment;
+    DistanceMeter distance_meter{environment.track.model.limits};
 };
 
 } // namespace lf::game::engine

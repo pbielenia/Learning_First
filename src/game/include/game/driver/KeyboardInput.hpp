@@ -10,7 +10,7 @@ class KeyboardInput : public Driver {
 public:
     explicit KeyboardInput(const sf::Event& window_event) : event{window_event} {}
 
-    Steering get_steering() override;
+    Steering get_steering(const engine::DistanceMeter::Measures&) override;
     static std::unique_ptr<Driver> create(const sf::Event& window_event);
 
 private:

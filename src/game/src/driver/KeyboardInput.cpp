@@ -4,7 +4,7 @@
 
 using namespace lf::game::driver;
 
-Steering KeyboardInput::get_steering()
+Steering KeyboardInput::get_steering([[maybe_unused]] const engine::DistanceMeter::Measures& measures)
 {
     set_driver_choice();
     set_car_steering();

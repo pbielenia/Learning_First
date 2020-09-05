@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <game/driver/KeyboardInput.hpp>
+#include "game/driver/Bot.hpp"
 #include <iostream>
 
 lf::game::environment::Car
@@ -15,8 +16,8 @@ create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
             textures_loader.get_texture("car-wheels.png"),
             0.1f};
         lf::game::environment::Car::TechnicalSpecs technical_specs;
-        technical_specs.max_speed = 10;
-        technical_specs.max_acceleration = 5;
+        technical_specs.max_speed = 4;
+        technical_specs.max_acceleration = 3;
 
         return {textures, technical_specs};
 
@@ -54,7 +55,8 @@ int main()
 
     lf::game::environment::Environment environment{std::move(car), std::move(track)};
     lf::game::engine::Engine game{std::move(environment)};
-    auto driver = lf::game::driver::KeyboardInput::create(game.get_event());
+//    auto driver = lf::game::driver::KeyboardInput::create(game.get_event());
+    auto driver = lf::game::driver::Bot::create();
     game.set_driver(std::move(driver));
     game.run();
 

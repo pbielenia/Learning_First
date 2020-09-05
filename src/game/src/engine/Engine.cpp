@@ -13,10 +13,10 @@ using namespace lf::game::engine;
 void Engine::run()
 {
     while (window.isOpen()) {
+        measures = distance_meter.get_measures(environment);
         do {
             process_input();
         } while (window.pollEvent(event));
-        measures = distance_meter.get_measures(environment);
         process_models();
         draw();
         sleep();
@@ -40,7 +40,7 @@ void Engine::process_input()
             and event.key.code == sf::Keyboard::Escape)) {
         window.close();
     }
-    steering = driver->get_steering();
+    steering = driver->get_steering(measures);
 }
 
 void Engine::process_models()

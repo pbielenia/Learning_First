@@ -11,11 +11,9 @@ using namespace lf::game::engine;
 void Engine::run()
 {
     while (window.isOpen()) {
-
-        while (window.pollEvent(event)) {
-        }
-        environment.car.set_steering(driver->get_steering());
-        process_input();
+        do {
+            process_input();
+        } while (window.pollEvent(event));
         process_models();
         draw();
         sleep();
@@ -39,10 +37,12 @@ void Engine::process_input()
             and event.key.code == sf::Keyboard::Escape)) {
         window.close();
     }
+    steering = driver->get_steering();
 }
 
 void Engine::process_models()
 {
+    environment.car.set_steering(steering);
     physics::processing::process(environment.car.model, environment.track.model);
     environment.car.update_drawing();
 }

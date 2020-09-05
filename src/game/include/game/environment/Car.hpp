@@ -3,6 +3,7 @@
 #include "physics/models/Vehicle.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 namespace lf::game::environment {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "game/environment/Environment.hpp"
 #include "game/driver/Driver.hpp"
+#include "game/environment/Environment.hpp"
 
 #include <memory>
 
@@ -25,6 +25,7 @@ private:
     sf::RenderWindow window{sf::VideoMode(1920, 1080), "Learning First"};
     sf::Event event;
 
+    driver::Steering steering;
     std::unique_ptr<driver::Driver> driver;
     environment::Environment environment;
 };

@@ -3,7 +3,9 @@
 #include "physics/processing/processing.hpp"
 
 #include <chrono>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <thread>
 
 using namespace lf::game::engine;
@@ -14,7 +16,7 @@ void Engine::run()
         do {
             process_input();
         } while (window.pollEvent(event));
-        lines = distance_meter.get_lines(environment);
+        measures = distance_meter.get_measures(environment);
         process_models();
         draw();
         sleep();
@@ -58,15 +60,50 @@ void Engine::draw()
     window.clear(sf::Color::Black);
     window.draw(environment.track.drawing);
     window.draw(environment.car.drawing);
-    window.draw(lines.front);
-    window.draw(lines.left);
-    window.draw(lines.right);
-    window.draw(lines.front_left);
-    window.draw(lines.front_right);
+    window.draw(measures.lines.front);
+    window.draw(measures.lines.left);
+    window.draw(measures.lines.right);
+    window.draw(measures.lines.front_left);
+    window.draw(measures.lines.front_right);
+
+    window.draw(
+        create_text(0.0F, 0.0F, format_distance("front", measures.distances.front)));
+    window.draw(
+        create_text(0.0F, 25.0F, format_distance("left", measures.distances.left)));
+    window.draw(
+        create_text(0.0F, 50.0F, format_distance("right", measures.distances.right)));
+    window.draw(
+        create_text(0.0F,
+                    75.0F,
+                    format_distance("front_left", measures.distances.front_left)));
+    window.draw(
+        create_text(0.0F,
+                    100.0F,
+                    format_distance("front_right", measures.distances.front_right)));
+
     window.display();
 }
 
 void Engine::sleep()
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
+}
+
+std::string Engine::format_distance(const std::string& title, float distance)
+{
+    std::ostringstream formatted_text;
+
+    formatted_text << std::setw(13) << std::left << (title + ": ") << std::setw(4)
+                   << std::setprecision(0) << std::fixed << std::right << distance;
+    return formatted_text.str();
+}
+
+sf::Text Engine::create_text(float x, float y, const std::string& message)
+{
+    sf::Text text;
+    text.setFont(font);
+    text.setPosition(x, y);
+    text.setCharacterSize(20);
+    text.setString(message);
+    return text;
 }

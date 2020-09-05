@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <chrono>
+#include <cmath>
 #include <iostream>
 
 namespace lf::game::engine {
@@ -20,7 +21,7 @@ public:
         float right{0.0F};
         float front_right{0.0F};
     };
-    //
+
     struct Lines {
         sf::VertexArray front{sf::Lines, 2};
         sf::VertexArray left{sf::Lines, 2};
@@ -29,23 +30,28 @@ public:
         sf::VertexArray front_right{sf::Lines, 2};
     };
 
+    struct Measures {
+        Distances distances;
+        Lines lines;
+    };
+
     explicit DistanceMeter(const sf::Sprite& track)
         : track_limits{track.getTexture()->copyToImage()}
     {
     }
 
-    Lines get_lines(const environment::Environment& environment)
+    Measures get_measures(const environment::Environment& environment)
     {
-        auto start = std::chrono::high_resolution_clock::now();
+        create_lines(environment);
+        calculate_distances();
+        return std::move(measures);
+    }
 
+private:
+    void create_lines(const environment::Environment& environment)
+    {
         const auto driver_position{environment.car.model.position};
         const auto car_rotation{environment.car.model.rotation};
-        //        std::cout << driver_position.x << ", " << driver_position.y << ", "
-        //                  << car_rotation << "\n";
-
-//        const sf::Vector2f versor_front{helpers::sin_deg(car_rotation),
-//                                        helpers::cos_deg(car_rotation)};
-//        const sf::Vector2f versor_left = rotate_vector(versor_front, -90.0F);
 
         auto front_endpoint = find_track_limit_at_line(driver_position, car_rotation);
         auto left_endpoint =
@@ -57,25 +63,18 @@ public:
         auto front_right_endpoint =
             find_track_limit_at_line(driver_position, car_rotation + 45.0F);
 
-        Lines lines;
-        lines.front.append(driver_position);
-        lines.front.append(front_endpoint);
-        lines.left.append(driver_position);
-        lines.left.append(left_endpoint);
-        lines.right.append(driver_position);
-        lines.right.append(right_endpoint);
-        lines.front_left.append(driver_position);
-        lines.front_left.append(front_left_endpoint);
-        lines.front_right.append(driver_position);
-        lines.front_right.append(front_right_endpoint);
-        auto end = std::chrono::high_resolution_clock::now();
-        std::cout
-            << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-            << " ms\n";
-        return lines;
+        measures.lines.front.append(driver_position);
+        measures.lines.front.append(front_endpoint);
+        measures.lines.left.append(driver_position);
+        measures.lines.left.append(left_endpoint);
+        measures.lines.right.append(driver_position);
+        measures.lines.right.append(right_endpoint);
+        measures.lines.front_left.append(driver_position);
+        measures.lines.front_left.append(front_left_endpoint);
+        measures.lines.front_right.append(driver_position);
+        measures.lines.front_right.append(front_right_endpoint);
     }
 
-private:
     sf::Vector2f rotate_vector(const sf::Vector2f& to_rotate, float angle)
     {
         return {to_rotate.x * helpers::cos_deg(angle)
@@ -97,7 +96,22 @@ private:
         return endpoint;
     }
 
+    void calculate_distances()
+    {
+        measures.distances.front = calculate_line_length(measures.lines.front);
+        measures.distances.left = calculate_line_length(measures.lines.left);
+        measures.distances.right = calculate_line_length(measures.lines.right);
+        measures.distances.front_left = calculate_line_length(measures.lines.front_left);
+        measures.distances.front_right = calculate_line_length(measures.lines.front_right);
+    }
+
+    float calculate_line_length(const sf::VertexArray& line)
+    {
+        return std::sqrt(std::pow(line[0].position.x - line[1].position.x, 2)
+                         + std::pow(line[0].position.y - line[1].position.y, 2));
+    }
     sf::Image track_limits;
+    Measures measures;
 };
 
 } // namespace lf::game::engine

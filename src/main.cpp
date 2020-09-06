@@ -16,7 +16,7 @@ create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
             textures_loader.get_texture("car-wheels.png"),
             0.1f};
         lf::game::environment::Car::TechnicalSpecs technical_specs;
-//        technical_specs.max_speed = ;
+        technical_specs.max_speed = 3;
         technical_specs.max_acceleration = 3;
 
         return {textures, technical_specs};

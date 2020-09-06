@@ -15,6 +15,15 @@ namespace lf::game::engine {
 class DistanceMeter {
 public:
     struct Distances {
+        Distances() = default;
+
+        Distances(
+            float front, float left, float front_left, float right, float front_right)
+            : front{front}, left{left}, front_left{front_left}, right{right},
+              front_right{front_right}
+        {
+        }
+
         float front{0.0F};
         float left{0.0F};
         float front_left{0.0F};
@@ -156,5 +165,19 @@ private:
     sf::Image track_limits;
     Measures measures;
 };
+
+static bool operator==(const DistanceMeter::Distances& lhs,
+                       const DistanceMeter::Distances& rhs)
+{
+    return std::tuple(lhs.right, lhs.front_right, lhs.front, lhs.front_left, lhs.left)
+           == std::tuple(rhs.right, rhs.front_right, rhs.front, rhs.front_left, rhs.left);
+}
+
+static bool operator<(const DistanceMeter::Distances& lhs,
+                      const DistanceMeter::Distances& rhs)
+{
+    return std::tuple(lhs.right, lhs.front_right, lhs.front, lhs.front_left, lhs.left)
+           < std::tuple(rhs.right, rhs.front_right, rhs.front, rhs.front_left, rhs.left);
+}
 
 } // namespace lf::game::engine

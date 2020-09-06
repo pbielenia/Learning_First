@@ -12,14 +12,33 @@ using namespace lf::game::engine;
 
 void Engine::run()
 {
+    const auto number_of_episodes{1000U};
+    auto current_episode_number{1U};
+    const auto max_tries_number{200U};
+
+    const auto starting_position{sf::Vector2f{600.0F, 140.0F}};
+
     while (window.isOpen()) {
-        measures = distance_meter.get_measures(environment);
-        do {
-            process_input();
-        } while (window.pollEvent(event));
-        process_models();
-        draw();
-        sleep();
+        std::cout << "Training is started.\n";
+        for (auto episode{0U}; episode < number_of_episodes; ++episode) {
+            std::cout << "Episode " << episode << " start.\n";
+            environment.car.model.position = starting_position;
+
+            for (auto driver_try{0U}; driver_try < max_tries_number; ++driver_try) {
+                measures = distance_meter.get_measures(environment);
+                if (measures.out_of_track == true) {
+                    std::cout << "Out of track. Finishing the episode number " << episode
+                              << ".\n";
+                    break;
+                }
+                do {
+                    process_input();
+                } while (window.pollEvent(event));
+                process_models();
+                draw();
+                sleep();
+            }
+        }
     }
 }
 

@@ -30,9 +30,13 @@ public:
         sf::VertexArray front_right{sf::Lines, 2};
     };
 
+    enum class Segment { None, First, Second, Third };
+
     struct Measures {
         Distances distances;
         Lines lines;
+        Segment segment;
+        bool out_of_track{false};
     };
 
     explicit DistanceMeter(const sf::Sprite& track)
@@ -44,6 +48,8 @@ public:
     {
         create_lines(environment);
         calculate_distances();
+        check_segments(environment);
+        check_out_of_track(environment);
         return std::move(measures);
     }
 
@@ -85,11 +91,11 @@ private:
 
     sf::Vector2f find_track_limit_at_line(const sf::Vector2f& beginning, float line_slope)
     {
+        static const auto grass_color = sf::Color(47, 167, 32, 255);
         auto endpoint{beginning};
         while (endpoint.x > 0U and endpoint.x < track_limits.getSize().x
                and endpoint.y > 0U and endpoint.y < track_limits.getSize().y
-               and track_limits.getPixel(endpoint.x, endpoint.y)
-                       == sf::Color::Transparent) {
+               and track_limits.getPixel(endpoint.x, endpoint.y) != grass_color) {
             endpoint.x += (10.0F * helpers::sin_deg(line_slope));
             endpoint.y -= (10.0F * helpers::cos_deg(line_slope));
         }
@@ -102,7 +108,8 @@ private:
         measures.distances.left = calculate_line_length(measures.lines.left);
         measures.distances.right = calculate_line_length(measures.lines.right);
         measures.distances.front_left = calculate_line_length(measures.lines.front_left);
-        measures.distances.front_right = calculate_line_length(measures.lines.front_right);
+        measures.distances.front_right =
+            calculate_line_length(measures.lines.front_right);
     }
 
     float calculate_line_length(const sf::VertexArray& line)
@@ -110,6 +117,42 @@ private:
         return std::sqrt(std::pow(line[0].position.x - line[1].position.x, 2)
                          + std::pow(line[0].position.y - line[1].position.y, 2));
     }
+
+    void check_segments(const environment::Environment& environment)
+    {
+        static const auto segment_a_color = sf::Color(167, 144, 32, 255);
+        static const auto segment_b_color = sf::Color(214, 220, 60, 255);
+        static const auto segment_c_color = sf::Color(171, 211, 31, 255);
+
+        const auto& car_position = environment.car.model.position;
+        const auto car_pixel_color =
+            track_limits.getPixel(car_position.x, car_position.y);
+
+        if (car_pixel_color == segment_a_color) {
+            measures.segment = Segment::First;
+        } else if (car_pixel_color == segment_b_color) {
+            measures.segment = Segment::Second;
+        } else if (car_pixel_color == segment_c_color) {
+            measures.segment = Segment::Third;
+        } else {
+            measures.segment = Segment::None;
+        }
+    }
+
+    void check_out_of_track(const environment::Environment& environment)
+    {
+        static const auto grass_color = sf::Color(47, 167, 32, 255);
+
+        const auto& car_position = environment.car.model.position;
+        const auto car_pixel = track_limits.getPixel(car_position.x, car_position.y);
+
+        if (car_pixel == grass_color) {
+            measures.out_of_track = true;
+        } else {
+            measures.out_of_track = false;
+        }
+    }
+
     sf::Image track_limits;
     Measures measures;
 };

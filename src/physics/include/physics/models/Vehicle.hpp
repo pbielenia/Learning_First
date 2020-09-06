@@ -25,8 +25,8 @@ struct Vehicle {
 
     sf::Sprite wheels;
 
-    const unsigned max_speed;
-    const unsigned max_acceleration;
+    unsigned max_speed;
+    unsigned max_acceleration;
     const int max_steering{3};
 };
 

@@ -16,7 +16,7 @@ create_car_object(const lf::game::engine::TexturesLoader& textures_loader)
             textures_loader.get_texture("car-wheels.png"),
             0.1f};
         lf::game::environment::Car::TechnicalSpecs technical_specs;
-        technical_specs.max_speed = 4;
+//        technical_specs.max_speed = ;
         technical_specs.max_acceleration = 3;
 
         return {textures, technical_specs};
@@ -33,7 +33,7 @@ create_track_object(const lf::game::engine::TexturesLoader& textures_loader)
     try {
         lf::game::environment::Track::TexturesPack textures{
             textures_loader.get_texture("custom_track.png"),
-            textures_loader.get_texture("custom_track-grass.png")};
+            textures_loader.get_texture("custom_track-meta.png")};
 
         return {textures};
 
@@ -49,7 +49,7 @@ int main()
     lf::game::engine::TexturesLoader textures_loader{"images"};
     textures_loader.load();
     auto car = create_car_object(textures_loader);
-    car.set_position(1400.0f, 100.0f);
+    car.set_position(600.0f, 100.0f);
     car.set_rotation(90.0f);
     auto track = create_track_object(textures_loader);
 

@@ -40,12 +40,12 @@ void process(models::Vehicle& vehicle, const models::Track& track)
         vehicle.velocity -= 0.02;
     }
 
-    if (Collision::PixelPerfectTest(vehicle.wheels, track.limits) == true) {
+//    if (Collision::PixelPerfectTest(vehicle.wheels, track.limits) == true) {
 //        std::cout << "Out of the track!\n";
-        vehicle.velocity -= (vehicle.velocity > 1.0f) ? 0.22f : 0.0f;
-    } else {
+//        vehicle.velocity -= (vehicle.velocity > 1.0f) ? 0.22f : 0.0f;
+//    } else {
 //        std::cout << "In the track\n";
-    }
+//    }
 
 //    std::cout << "Velocity: " << vehicle.velocity << "\n";
 

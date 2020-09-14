@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.17)
 set(target_name models)
 
 add_library(${target_name}
+    include/models/Drawable.hpp
+    include/models/Track.hpp
+    include/models/Vehicle.hpp
     src/Drawable.cpp
     src/Vehicle.cpp
     src/Track.cpp

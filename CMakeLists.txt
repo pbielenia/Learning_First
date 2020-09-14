@@ -3,11 +3,11 @@ project(learningfirst)
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
+set(CMAKE_CXX_STANDARD 20)
+
 add_subdirectory(src/helpers)
 add_subdirectory(src/physics)
 add_subdirectory(src/game)
-# add_subdirectory(src/components)
-# add_subdirectory(src/models)
 
 set(target_name ${PROJECT_NAME})
 

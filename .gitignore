@@ -1,6 +1,8 @@
 # Project specific
 build/
+cmake-build-debug
 .vscode/
+.idea/
 
 # Prerequisites
 *.d

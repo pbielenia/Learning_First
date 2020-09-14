@@ -18,12 +18,12 @@ template<typename T> T rad_to_deg(T radians)
     return radians * multiplier;
 }
 
-float sin_deg(float degrees)
+static float sin_deg(float degrees)
 {
     return std::sin(deg_to_rad(degrees));
 }
 
-float cos_deg(float degrees)
+static float cos_deg(float degrees)
 {
     return std::cos(deg_to_rad(degrees));
 }

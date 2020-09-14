@@ -3,15 +3,16 @@
 #include "physics/models/Vehicle.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
-namespace lf::game::objects {
+namespace lf::game::environment {
 
 struct Car {
 
     struct TexturesPack {
         TexturesPack(const sf::Texture& drawing,
                      const sf::Texture& wheels,
-                     float scale = 1.0f)
+                     float scale = 1.0F)
             : drawing{drawing}, wheels{wheels}, scale{scale}
         {
         }
@@ -29,7 +30,7 @@ struct Car {
     struct Steering {
         bool accelerating{false};
         bool braking{false};
-        float wheels_angle{0.0f};
+        float wheels_angle{0.0F};
     };
 
     Car(const TexturesPack& textures, const TechnicalSpecs& technical_specs)
@@ -42,8 +43,8 @@ struct Car {
         drawing.setScale(textures.scale, textures.scale);
 
         const auto dimensions = drawing.getLocalBounds();
-        const auto center_x = dimensions.width / 2.0f;
-        const auto center_y = dimensions.height / 2.0f;
+        const auto center_x = dimensions.width / 2.0F;
+        const auto center_y = dimensions.height / 2.0F;
         drawing.setOrigin(center_x, center_y);
         model.wheels.setOrigin(center_x, center_y);
     }
